@@ -1,0 +1,9 @@
+This is a repository for the homework solutions of Stat 579
+(Introduction to Statistical Computing) at Iowa State University. LyX
+and pgfSweave are used to write solutions, and only the source files
+are kept in this repository; PDF files are uploaded separately so you
+can download directly when clicking the `Downloads' button in the
+top-right corner.
+
+Yihui Xie
+TA of Stat 579, 2011
