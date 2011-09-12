@@ -1,0 +1,14 @@
+*.aux
+*.figlist
+*.log
+*.lyx~
+*.makefile
+*.map
+*.pdf
+*.Rnw
+*.tex
+cache
+figure
+lyxstangle.R
+lyxsweave.R
+tikzDict-*
