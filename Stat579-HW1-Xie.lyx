@@ -1,0 +1,900 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 415
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{Sweave}
+\usepackage{tikz}
+\usepackage{ae}
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{aess}
+\renewcommand{\ttdefault}{aett}
+\end_preamble
+\options nogin
+\use_default_options true
+\begin_modules
+sweave
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\use_undertilde 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2cm
+\rightmargin 2.5cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Flex Sweave Options
+status open
+
+\begin_layout Plain Layout
+
+tidy=TRUE,prefix.string=figure/stat579,external=TRUE
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chunk
+
+<<set-options,echo=FALSE>>=
+\end_layout
+
+\begin_layout Chunk
+
+options(replace.assign=TRUE,SweaveHooks=list(
+\end_layout
+
+\begin_layout Chunk
+
+  fig=function() {par(mar=c(4,4,.1,.1),cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)}
+\end_layout
+
+\begin_layout Chunk
+
+))
+\end_layout
+
+\begin_layout Chunk
+
+setCacheDir('cache')
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Title
+Stat 579 Homework 1
+\end_layout
+
+\begin_layout Author
+Yihui Xie
+\end_layout
+
+\begin_layout Standard
+Note: I prefer solid points to the default circles when making plots in
+ R; that is what 
+\family typewriter
+pch = 20
+\family default
+ means.
+ For more information, see 
+\family typewriter
+example(points)
+\family default
+.
+\end_layout
+
+\begin_layout Enumerate
+apt data
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+read the data
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<read-apt,cache=TRUE>>=
+\end_layout
+
+\begin_layout Chunk
+
+x='http://www.public.iastate.edu/~maitra/stat579/datasets/student-apt.dat'
+\end_layout
+
+\begin_layout Chunk
+
+apt = read.table(x,col.names=c('group','aptitude','mathematics','language','genera
+l.knowledge'))
+\end_layout
+
+\begin_layout Chunk
+
+## or you can use names(apt) <- c(...)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+pairwise scatterplot (black: technical; red: architecture; green: medical
+ technology)
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<apt-pairs,fig=TRUE,height=4.5,width=5>>=
+\end_layout
+
+\begin_layout Chunk
+
+pairs(apt[,-1],pch=20,col=apt[,1])
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+We see students in the technical disciplines have relatively lower scores
+ (they are often in the lower part of the scatter plots), and architecture
+ students seem to be able to achieve higher scores on average.
+ There seems to be weak positive correlations between the four variables,
+ but the patterns are not identical for the three groups of students.
+ We may be able to know more through numerical summaries.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+cars
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+similar to 1 (a) (actually I used the one in R instead of reading from the
+ website)
+\end_layout
+
+\begin_layout Enumerate
+attach 
+\family typewriter
+cars
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<attach-cars>>=
+\end_layout
+
+\begin_layout Chunk
+
+attach(cars)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+1 mile = 5280 feet; 1 hour = 3600 seconds
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<convert-speed>>=
+\end_layout
+
+\begin_layout Chunk
+
+speed.fps = speed * 5280/3600  # feet per second
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+scatter plot
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<speed-vs-distance,fig=TRUE,width=3,height=3>>=
+\end_layout
+
+\begin_layout Chunk
+
+plot(dist, speed.fps,xlab='distance (feet)',ylab='speed (feet/second)',pch=20)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+convert to metres
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<metric-system>>=
+\end_layout
+
+\begin_layout Chunk
+
+speed.mps = speed*1609.3/3600; dist.m = dist/5280*1609.3
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+detach 
+\family typewriter
+cars
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<detach-cars>>=
+\end_layout
+
+\begin_layout Chunk
+
+detach(cars)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+scatter plot (after conversion)
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<speed-vs-distance-m,fig=TRUE,width=3,height=3>>=
+\end_layout
+
+\begin_layout Chunk
+
+plot(dist.m, speed.mps, xlab='distance (metres)',ylab='speed (metres/second)',pch=
+20)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+several ways to do this, e.g., after you have made one plot, you can immediately
+ call 
+\family typewriter
+dev.print(file = 'your-file-name.ps')
+\family default
+ to save your plot to a postscript file (by default), or 
+\emph on
+before 
+\emph default
+you make a plot, you can open an off-screen graphical device to record your
+ plot to a file, e.g.
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<save-plot,eval=FALSE>>=
+\end_layout
+
+\begin_layout Chunk
+
+png('my-cars-plot1.png')  # open a device; other possibilities: pdf(), jpeg(),
+ ...
+\end_layout
+
+\begin_layout Chunk
+
+plot(cars)
+\end_layout
+
+\begin_layout Chunk
+
+dev.off()  # close the device, and a PNG file is created
+\end_layout
+
+\begin_layout Chunk
+
+getwd()  # go find the image file under the current working directory
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Standard
+What we can see is that the two scatter plots are almost identical, except
+ the scales of axes, which is no surprise since the conversion is linear.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+pressure
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Celsius to Fahrenheit
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<cel-to-fah>>=
+\end_layout
+
+\begin_layout Chunk
+
+temperature.f = pressure$temperature *9/5 + 32  # happy Americans
+\end_layout
+
+\begin_layout Chunk
+
+## now create a new data frame
+\end_layout
+
+\begin_layout Chunk
+
+pressure2 = data.frame(temperature = temperature.f, pressure = pressure$pressure)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+see (a)
+\end_layout
+
+\begin_layout Enumerate
+scatter plot
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<pressure-vs-temp,fig=TRUE,width=3,height=3>>=
+\end_layout
+
+\begin_layout Chunk
+
+plot(temperature~pressure, data = pressure2, xlab='temperature (Fahrenheit
+ scale)',pch=20)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+regression without intercept
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<regression-wo-inter,fig=TRUE,width=3,height=3>>=
+\end_layout
+
+\begin_layout Chunk
+
+# + 0 means no intercept, or you can use: pressure - 1
+\end_layout
+
+\begin_layout Chunk
+
+fit = lm(temperature~pressure+0, data = pressure2)
+\end_layout
+
+\begin_layout Chunk
+
+summary(fit)
+\end_layout
+
+\begin_layout Chunk
+
+## plot with a fitted line
+\end_layout
+
+\begin_layout Chunk
+
+plot(temperature~pressure, data = pressure2, ylab='temperature (Fahrenheit
+ scale)',pch=20)
+\end_layout
+
+\begin_layout Chunk
+
+abline(fit, col='red')
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Standard
+Obviously this simple linear regression is terrible -- it can barely characteriz
+e the pattern in data (curvature), although the coefficient for pressure
+ is highly significant.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+residuals vs fitted values
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<res-vs-fitted,fig=TRUE,width=3,height=3>>=
+\end_layout
+
+\begin_layout Chunk
+
+plot(fitted(fit), resid(fit),xlab='fitted values',ylab='residuals',pch=20)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Standard
+Usually the key to read a residual plot is that we should not see any patterns
+ if the linear model is adequate, but in this plot, we certainly can.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+yet another new data frame
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<more-pressure>>=
+\end_layout
+
+\begin_layout Chunk
+
+pressure3 = pressure2  # base on pressure2
+\end_layout
+
+\begin_layout Chunk
+
+pressure3$pressure.2 = pressure3$pressure^2  # square
+\end_layout
+
+\begin_layout Chunk
+
+pressure3$pressure.3 = pressure3$pressure^3  # cubic
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+multiple regression
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<multiple-lm>>=
+\end_layout
+
+\begin_layout Chunk
+
+## ~.
+ means using all the variables in the data frame; of course you can write
+ them out explicitly as: temperature ~ pressure + pressure.2 + pressure.3
+\end_layout
+
+\begin_layout Chunk
+
+fit3 = lm(temperature~., data = pressure3)
+\end_layout
+
+\begin_layout Chunk
+
+summary(fit3)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Standard
+All the coefficients are significant if we set the confidence level 
+\begin_inset Formula $\alpha=0.05$
+\end_inset
+
+.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+fitted line in the multiple regression
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<multiple-lm-plot,fig=TRUE,width=3,height=3>>=
+\end_layout
+
+\begin_layout Chunk
+
+plot(temperature~pressure, data = pressure3, ylab='temperature (Fahrenheit
+ scale)',pch=20)
+\end_layout
+
+\begin_layout Chunk
+
+lines(pressure3$pressure, fitted(fit3), col='blue')
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Standard
+The cubic line fits better than the straight line; at least it has characterized
+ the curvature pattern.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+residuals against fitted
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<res-vs-fitted2,fig=TRUE,width=3,height=3>>=
+\end_layout
+
+\begin_layout Chunk
+
+plot(fitted(fit3), resid(fit3),xlab='fitted values',ylab='residuals (multiple
+ regression)',pch=20)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Standard
+Although the model fit seems to be better, the residual plot is still terrible.
+ Stat 500 will talk about this in detail; what I can tell right now is that
+ there is likely to be strong auto-correlations in the observations.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Standard
+\align center
+---SOLUTIONS END HERE---
+\end_layout
+
+\begin_layout Standard
+This appendix is only for those who are interested in playing with add-on
+ packages of R.
+ Feel free to ignore it if you are not interested.
+\end_layout
+
+\begin_layout Section
+\start_of_appendix
+Towards better readability of R code
+\end_layout
+
+\begin_layout Standard
+It is important to write code in a human-readable style -- use spaces and
+ indent where appropriate, and comment the code clearly.
+ Depending on the text editor you use, it can be time-consuming to maintain
+ readable code.
+ Advanced users may find Emacs with ESS a handy combination for writing
+ beautiful R code, but Emacs is usually bloody hell for beginners.
+ For Windows users, I would recommend 
+\emph on
+not
+\emph default
+ to use the built-in editor in R GUI, or Notepad/Wordpad (or even worse,
+ Microsoft Word) to write R code.
+ The reason is you do not have to torture your eyes or your mind by working
+ in such poor environments.
+ Notepad++ can be a better alternative (it is free: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://notepad-plus-plus.org/
+\end_layout
+
+\end_inset
+
+); you can use it with a plugin named NppToR (again, free: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://sourceforge.net/projects/npptor/
+\end_layout
+
+\end_inset
+
+) which allows you to send your R code in Notepad++ directly to R.
+ I have added auto-completion support to Notepad++ too (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://yihui.name/en/2010/08/auto-completion-in-notepad-for-r-script/
+\end_layout
+
+\end_inset
+
+).
+ I'm not familar with Mac OS, so I have no idea about the editors in Mac.
+ Most of time I use Emacs+ESS under Ubuntu (a Linux distribution).
+\end_layout
+
+\begin_layout Standard
+The editor does not solve all the problems, although it can, for example,
+ add indent automatically when you break a line.
+ I'm lazy to type all the spaces in my code as well, therefore I wrote an
+ R package 
+\series bold
+formatR
+\series default
+ to serve the lazy R programmers, which can automatically format your R
+ code; it is available on CRAN (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://cran.r-project.org/package=formatR
+\end_layout
+
+\end_inset
+
+) and you can install it by:
+\end_layout
+
+\begin_layout Chunk
+
+<<install-formatR, eval=FALSE>>=
+\end_layout
+
+\begin_layout Chunk
+
+install.packages('formatR')
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Standard
+The usage is simple:
+\end_layout
+
+\begin_layout Chunk
+
+<<formatR-usage, eval=FALSE>>=
+\end_layout
+
+\begin_layout Chunk
+
+library(formatR)
+\end_layout
+
+\begin_layout Chunk
+
+## now copy your R code to clipboard (usually Ctrl+C), then
+\end_layout
+
+\begin_layout Chunk
+
+tidy.source()
+\end_layout
+
+\begin_layout Chunk
+
+## or if you have an R script under a directory, say, C:/abc/def/my-script.R,
+ you can use
+\end_layout
+
+\begin_layout Chunk
+
+tidy.source('C:/abc/def/my-script.R')
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Standard
+
+See the screenshots at 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://yihui.name/en/2010/04/formatr-farewell-to-ugly-r-code/
+\end_layout
+
+\end_inset
+
+ to understand what is going on (it can be a little bit difficult for beginners
+ to install the GUI, but 
+\emph on
+tidy.source()
+\emph default
+ does not depend on a GUI).
+ I use this package to format my R code in the homework solutions.
+\end_layout
+
+\begin_layout Standard
+
+Most importantly, you'd better follow some style guides while writing your
+ code.
+ Unfortunately people often have too many guides and do not agree with each
+ other.
+ Anyway, I encourage you to read one of the following guides:
+\end_layout
+
+\begin_layout Itemize
+
+Hadley Wickham's: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://had.co.nz/stat405/resources/r-style-guide.html
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+Google's: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://google-styleguide.googlecode.com/svn/trunk/google-r-style.html
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+I will certainly appreciate your efforts on making R code elegant.
+\end_layout
+
+\end_body
+\end_document
