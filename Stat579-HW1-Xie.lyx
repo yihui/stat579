@@ -92,32 +92,26 @@ tidy=TRUE,prefix.string=figure/stat579,external=TRUE
 \end_layout
 
 \begin_layout Chunk
-
 <<set-options,echo=FALSE>>=
 \end_layout
 
 \begin_layout Chunk
-
 options(replace.assign=TRUE,SweaveHooks=list(
 \end_layout
 
 \begin_layout Chunk
-
   fig=function() {par(mar=c(4,4,.1,.1),cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)}
 \end_layout
 
 \begin_layout Chunk
-
 ))
 \end_layout
 
 \begin_layout Chunk
-
 setCacheDir('cache')
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -154,28 +148,23 @@ read the data
 
 \begin_deeper
 \begin_layout Chunk
-
 <<read-apt,cache=TRUE>>=
 \end_layout
 
 \begin_layout Chunk
-
 x='http://www.public.iastate.edu/~maitra/stat579/datasets/student-apt.dat'
 \end_layout
 
 \begin_layout Chunk
-
 apt = read.table(x,col.names=c('group','aptitude','mathematics','language','genera
 l.knowledge'))
 \end_layout
 
 \begin_layout Chunk
-
 ## or you can use names(apt) <- c(...)
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -187,17 +176,14 @@ pairwise scatterplot (black: technical; red: architecture; green: medical
 
 \begin_deeper
 \begin_layout Chunk
-
 <<apt-pairs,fig=TRUE,height=4.5,width=5>>=
 \end_layout
 
 \begin_layout Chunk
-
 pairs(apt[,-1],pch=20,col=apt[,1])
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -230,17 +216,14 @@ cars
 
 \begin_deeper
 \begin_layout Chunk
-
 <<attach-cars>>=
 \end_layout
 
 \begin_layout Chunk
-
 attach(cars)
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -251,17 +234,14 @@ attach(cars)
 
 \begin_deeper
 \begin_layout Chunk
-
 <<convert-speed>>=
 \end_layout
 
 \begin_layout Chunk
-
 speed.fps = speed * 5280/3600  # feet per second
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -272,17 +252,14 @@ scatter plot
 
 \begin_deeper
 \begin_layout Chunk
-
 <<speed-vs-distance,fig=TRUE,width=3,height=3>>=
 \end_layout
 
 \begin_layout Chunk
-
 plot(dist, speed.fps,xlab='distance (feet)',ylab='speed (feet/second)',pch=20)
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -293,17 +270,14 @@ convert to metres
 
 \begin_deeper
 \begin_layout Chunk
-
 <<metric-system>>=
 \end_layout
 
 \begin_layout Chunk
-
 speed.mps = speed*1609.3/3600; dist.m = dist/5280*1609.3
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -316,17 +290,14 @@ cars
 
 \begin_deeper
 \begin_layout Chunk
-
 <<detach-cars>>=
 \end_layout
 
 \begin_layout Chunk
-
 detach(cars)
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -337,18 +308,15 @@ scatter plot (after conversion)
 
 \begin_deeper
 \begin_layout Chunk
-
 <<speed-vs-distance-m,fig=TRUE,width=3,height=3>>=
 \end_layout
 
 \begin_layout Chunk
-
 plot(dist.m, speed.mps, xlab='distance (metres)',ylab='speed (metres/second)',pch=
 20)
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -369,33 +337,27 @@ you make a plot, you can open an off-screen graphical device to record your
 
 \begin_deeper
 \begin_layout Chunk
-
 <<save-plot,eval=FALSE>>=
 \end_layout
 
 \begin_layout Chunk
-
 png('my-cars-plot1.png')  # open a device; other possibilities: pdf(), jpeg(),
  ...
 \end_layout
 
 \begin_layout Chunk
-
 plot(cars)
 \end_layout
 
 \begin_layout Chunk
-
 dev.off()  # close the device, and a PNG file is created
 \end_layout
 
 \begin_layout Chunk
-
 getwd()  # go find the image file under the current working directory
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -417,27 +379,22 @@ Celsius to Fahrenheit
 
 \begin_deeper
 \begin_layout Chunk
-
 <<cel-to-fah>>=
 \end_layout
 
 \begin_layout Chunk
-
 temperature.f = pressure$temperature *9/5 + 32  # happy Americans
 \end_layout
 
 \begin_layout Chunk
-
 ## now create a new data frame
 \end_layout
 
 \begin_layout Chunk
-
 pressure2 = data.frame(temperature = temperature.f, pressure = pressure$pressure)
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -452,18 +409,15 @@ scatter plot
 
 \begin_deeper
 \begin_layout Chunk
-
 <<pressure-vs-temp,fig=TRUE,width=3,height=3>>=
 \end_layout
 
 \begin_layout Chunk
-
-plot(temperature~pressure, data = pressure2, xlab='temperature (Fahrenheit
+plot(temperature~pressure, data = pressure2, ylab='temperature (Fahrenheit
  scale)',pch=20)
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -474,43 +428,35 @@ regression without intercept
 
 \begin_deeper
 \begin_layout Chunk
-
 <<regression-wo-inter,fig=TRUE,width=3,height=3>>=
 \end_layout
 
 \begin_layout Chunk
-
 # + 0 means no intercept, or you can use: pressure - 1
 \end_layout
 
 \begin_layout Chunk
-
 fit = lm(temperature~pressure+0, data = pressure2)
 \end_layout
 
 \begin_layout Chunk
-
 summary(fit)
 \end_layout
 
 \begin_layout Chunk
-
 ## plot with a fitted line
 \end_layout
 
 \begin_layout Chunk
-
 plot(temperature~pressure, data = pressure2, ylab='temperature (Fahrenheit
  scale)',pch=20)
 \end_layout
 
 \begin_layout Chunk
-
 abline(fit, col='red')
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -527,17 +473,14 @@ residuals vs fitted values
 
 \begin_deeper
 \begin_layout Chunk
-
 <<res-vs-fitted,fig=TRUE,width=3,height=3>>=
 \end_layout
 
 \begin_layout Chunk
-
 plot(fitted(fit), resid(fit),xlab='fitted values',ylab='residuals',pch=20)
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -553,27 +496,22 @@ yet another new data frame
 
 \begin_deeper
 \begin_layout Chunk
-
 <<more-pressure>>=
 \end_layout
 
 \begin_layout Chunk
-
 pressure3 = pressure2  # base on pressure2
 \end_layout
 
 \begin_layout Chunk
-
 pressure3$pressure.2 = pressure3$pressure^2  # square
 \end_layout
 
 \begin_layout Chunk
-
 pressure3$pressure.3 = pressure3$pressure^3  # cubic
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -584,29 +522,24 @@ multiple regression
 
 \begin_deeper
 \begin_layout Chunk
-
 <<multiple-lm>>=
 \end_layout
 
 \begin_layout Chunk
-
 ## ~.
  means using all the variables in the data frame; of course you can write
  them out explicitly as: temperature ~ pressure + pressure.2 + pressure.3
 \end_layout
 
 \begin_layout Chunk
-
 fit3 = lm(temperature~., data = pressure3)
 \end_layout
 
 \begin_layout Chunk
-
 summary(fit3)
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -625,23 +558,19 @@ fitted line in the multiple regression
 
 \begin_deeper
 \begin_layout Chunk
-
 <<multiple-lm-plot,fig=TRUE,width=3,height=3>>=
 \end_layout
 
 \begin_layout Chunk
-
 plot(temperature~pressure, data = pressure3, ylab='temperature (Fahrenheit
  scale)',pch=20)
 \end_layout
 
 \begin_layout Chunk
-
 lines(pressure3$pressure, fitted(fit3), col='blue')
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -657,18 +586,15 @@ residuals against fitted
 
 \begin_deeper
 \begin_layout Chunk
-
 <<res-vs-fitted2,fig=TRUE,width=3,height=3>>=
 \end_layout
 
 \begin_layout Chunk
-
 plot(fitted(fit3), resid(fit3),xlab='fitted values',ylab='residuals (multiple
  regression)',pch=20)
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -774,17 +700,14 @@ http://cran.r-project.org/package=formatR
 \end_layout
 
 \begin_layout Chunk
-
 <<install-formatR, eval=FALSE>>=
 \end_layout
 
 \begin_layout Chunk
-
 install.packages('formatR')
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
@@ -793,43 +716,35 @@ The usage is simple:
 \end_layout
 
 \begin_layout Chunk
-
 <<formatR-usage, eval=FALSE>>=
 \end_layout
 
 \begin_layout Chunk
-
 library(formatR)
 \end_layout
 
 \begin_layout Chunk
-
 ## now copy your R code to clipboard (usually Ctrl+C), then
 \end_layout
 
 \begin_layout Chunk
-
 tidy.source()
 \end_layout
 
 \begin_layout Chunk
-
 ## or if you have an R script under a directory, say, C:/abc/def/my-script.R,
  you can use
 \end_layout
 
 \begin_layout Chunk
-
 tidy.source('C:/abc/def/my-script.R')
 \end_layout
 
 \begin_layout Chunk
-
 @
 \end_layout
 
 \begin_layout Standard
-
 See the screenshots at 
 \begin_inset Flex URL
 status collapsed
@@ -851,7 +766,6 @@ tidy.source()
 \end_layout
 
 \begin_layout Standard
-
 Most importantly, you'd better follow some style guides while writing your
  code.
  Unfortunately people often have too many guides and do not agree with each
@@ -860,7 +774,6 @@ Most importantly, you'd better follow some style guides while writing your
 \end_layout
 
 \begin_layout Itemize
-
 Hadley Wickham's: 
 \begin_inset Flex URL
 status collapsed
@@ -876,7 +789,6 @@ http://had.co.nz/stat405/resources/r-style-guide.html
 \end_layout
 
 \begin_layout Itemize
-
 Google's: 
 \begin_inset Flex URL
 status collapsed
@@ -892,7 +804,6 @@ http://google-styleguide.googlecode.com/svn/trunk/google-r-style.html
 \end_layout
 
 \begin_layout Standard
-
 I will certainly appreciate your efforts on making R code elegant.
 \end_layout
 
