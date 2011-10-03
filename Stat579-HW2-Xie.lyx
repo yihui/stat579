@@ -1,0 +1,985 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 415
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{Sweave}
+\usepackage{tikz}
+\usepackage{ae}
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{aess}
+\renewcommand{\ttdefault}{aett}
+\end_preamble
+\options nogin
+\use_default_options true
+\begin_modules
+sweave
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding default
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\use_undertilde 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2cm
+\rightmargin 2.5cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Flex Sweave Options
+status open
+
+\begin_layout Plain Layout
+
+tidy=TRUE,prefix.string=figure/stat579,external=TRUE
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chunk
+
+<<set-options,echo=FALSE>>=
+\end_layout
+
+\begin_layout Chunk
+
+options(replace.assign=TRUE,SweaveHooks=list(
+\end_layout
+
+\begin_layout Chunk
+
+  fig=function() {par(mar=c(4,4,.1,.1),cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)}
+\end_layout
+
+\begin_layout Chunk
+
+),width=85)
+\end_layout
+
+\begin_layout Chunk
+
+setCacheDir('cache')
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Title
+Stat 579 Homework 2
+\end_layout
+
+\begin_layout Author
+Yihui Xie
+\end_layout
+
+\begin_layout Enumerate
+standard deviation
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+The long formula is 
+\begin_inset Formula $\sqrt{\sum_{i=1}^{n}(x_{i}-\bar{x})^{2}/(n-1)}$
+\end_inset
+
+, and the short one is 
+\begin_inset Formula $\sqrt{\left(\sum_{i=1}^{n}x_{i}^{2}-n\bar{x}^{2}\right)/(n-1)}$
+\end_inset
+
+ (they are mathematically equivalent)
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<sd-formula>>=
+\end_layout
+
+\begin_layout Chunk
+
+## the long formula
+\end_layout
+
+\begin_layout Chunk
+
+sd_long = function(x) {sqrt( sum( (x-mean(x))^2 )/(length(x) - 1) )}
+\end_layout
+
+\begin_layout Chunk
+
+## the short formula
+\end_layout
+
+\begin_layout Chunk
+
+sd_short = function(x) {n=length(x);sqrt((sum(x^2) - n*mean(x)^2)/(n-1))}
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Enumerate
+Input data
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<small-numbers>>=
+\end_layout
+
+\begin_layout Chunk
+
+d1=rep(c(1001, 1002), times = 5)  # replicate a vector for 5 times
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Long / short formula
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<small-results>>=
+\end_layout
+
+\begin_layout Chunk
+
+sd_long(d1)  # using long formula
+\end_layout
+
+\begin_layout Chunk
+
+sd_short(d1)  # using short formula
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Microsoft Excel: we input the numbers into cells A1 to A10, and use the
+ formula 
+\family typewriter
+=STDEV(A1:A10)
+\family default
+ to get a result 0.527046; in SAS (I used SAS 9.2 on sas.stat.iastate.edu):
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{verbatim}
+\end_layout
+
+\begin_layout Plain Layout
+
+data smallNum;
+\end_layout
+
+\begin_layout Plain Layout
+
+    input d1@@;
+\end_layout
+
+\begin_layout Plain Layout
+
+    datalines;
+\end_layout
+
+\begin_layout Plain Layout
+
+    1001 1002 1001 1002 1001 1002 1001 1002 1001 1002
+\end_layout
+
+\begin_layout Plain Layout
+
+;
+\end_layout
+
+\begin_layout Plain Layout
+
+proc means data = smallNum stddev;
+\end_layout
+
+\begin_layout Plain Layout
+
+    var d1;
+\end_layout
+
+\begin_layout Plain Layout
+
+run;
+\end_layout
+
+\begin_layout Plain Layout
+
+/* Std Dev 0.5270463 */
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{verbatim}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and in R we get:
+\end_layout
+
+\begin_layout Chunk
+
+<<small-sd>>=
+\end_layout
+
+\begin_layout Chunk
+
+sd(d1) # inbuilt function is sd()
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+similarly
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Input data
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<big-numbers>>=
+\end_layout
+
+\begin_layout Chunk
+
+d2=rep(c(100000000000001, 100000000000002), times=5)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Long / short formula
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<big-results>>=
+\end_layout
+
+\begin_layout Chunk
+
+sd_long(d2)  # using long formula
+\end_layout
+
+\begin_layout Chunk
+
+sd_short(d2)  # using short formula
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Microsoft Excel: I tried both Excel 2010 and Excel 2007; the former gave
+ me 0.527046, while the latter give me 1398101.333 (good to know MS Excel
+ developers were still working on the standard deviation after 2007); SAS
+ gave me 0:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{verbatim}
+\end_layout
+
+\begin_layout Plain Layout
+
+data bigNum;
+\end_layout
+
+\begin_layout Plain Layout
+
+    input d2@@;
+\end_layout
+
+\begin_layout Plain Layout
+
+    datalines;
+\end_layout
+
+\begin_layout Plain Layout
+
+    100000000000001 100000000000002 100000000000001 100000000000002 
+\end_layout
+
+\begin_layout Plain Layout
+
+    100000000000001 100000000000002 100000000000001 100000000000002 
+\end_layout
+
+\begin_layout Plain Layout
+
+    100000000000001 100000000000002 
+\end_layout
+
+\begin_layout Plain Layout
+
+;
+\end_layout
+
+\begin_layout Plain Layout
+
+proc means data = bigNum stddev;
+\end_layout
+
+\begin_layout Plain Layout
+
+   var d2;
+\end_layout
+
+\begin_layout Plain Layout
+
+run;
+\end_layout
+
+\begin_layout Plain Layout
+
+/* Std Dev is 0 here */
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{verbatim}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and in R we get:
+\end_layout
+
+\begin_layout Chunk
+
+<<big-sd>>=
+\end_layout
+
+\begin_layout Chunk
+
+sd(d2)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+SAS might be using the (numerically inappropriate) short formula, and Excel
+ (2007) must have used yet another mysterious formula, although I checked
+ their documentation and both of them 
+\emph on
+claimed
+\emph default
+ they used the long formula.
+ For those proprietary software, who knows? Donald Knuth called this phenomenon
+ of numeric instability for large numbers 
+\begin_inset Quotes eld
+\end_inset
+
+catastrophic cancellation
+\begin_inset Quotes erd
+\end_inset
+
+ (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://en.wikipedia.org/wiki/Computational_formulas_for_the_variance
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+wind data
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+open the Excel file and save it as a CSV file, then
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<wind-data>>=
+\end_layout
+
+\begin_layout Chunk
+
+wind = read.csv('wind.csv')  # assume wind.csv is under getwd()
+\end_layout
+
+\begin_layout Chunk
+
+str(wind)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+summaries
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<wind-summary>>=
+\end_layout
+
+\begin_layout Chunk
+
+## sapply() can be used to a data frame, in which a function is applied
+ to each column (here IQR means inter-quartile range, i.e.
+ 3rd quartile minus 1st quartile)
+\end_layout
+
+\begin_layout Chunk
+
+sapply(wind, function(x) {c(mean=mean(x),sd=sd(x),median=median(x),quantile(x,pr
+obs=c(.25,.5,.75)),IQR=IQR(x))})
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Not all of these measures make much sense, e.g., the mean or median may not
+ make any sense since this is a dataset measuring angles -- a mean of, say,
+ 180 degrees barely gives us any information about the direction of the
+ wind on average (both of the two plots below have a mean around 
+\begin_inset Formula $180\,^{\circ}$
+\end_inset
+
+, but they are extremely different).
+ The standard deviations, quartiles and IQR may make some sense since they
+ are measures of variability (how variable the wind directions are), however,
+ they suffer from this special form of measurements as well based on the
+ same reasoning (which of the following wind directions has larger variability?).
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<180-degrees,fig=TRUE,width=4.5,height=2.25>>=
+\end_layout
+
+\begin_layout Chunk
+
+## code provided here only for fun on playing with low-level plotting commands
+ (please ignore it if not interested)
+\end_layout
+
+\begin_layout Chunk
+
+set.seed(123) # for reproducibility
+\end_layout
+
+\begin_layout Chunk
+
+par(mfrow=c(1,2),ann=FALSE,mar=rep(0,4));n=30;x1=runif(n/2,0,.1*pi);x1=c(x1,2*pi-
+x1);x2=runif(n,0,2*pi)
+\end_layout
+
+\begin_layout Chunk
+
+plot(cos(x1),sin(x1),type='n',axes=FALSE,xlim=c(-1,1),ylim=c(-1,1));arrows(0,0,c
+os(x1),sin(x1),length=.05)
+\end_layout
+
+\begin_layout Chunk
+
+plot(cos(x2),sin(x2),type='n',axes=FALSE,xlim=c(-1,1),ylim=c(-1,1));arrows(0,0,c
+os(x2),sin(x2),length=.05)
+\end_layout
+
+\begin_layout Chunk
+
+## what are the means and standard deviations?
+\end_layout
+
+\begin_layout Chunk
+
+mean(x1)/pi*180;mean(x2)/pi*180;sd(x1);sd(x2)
+\end_layout
+
+\begin_layout Chunk
+
+## the right plot seems to have larger variability, but the left plot has
+ a larger variance!
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+a scatter plot of 
+\begin_inset Formula $(\cos\theta,\sin\theta)$
+\end_inset
+
+ colored by seasons; depending our interpretation of 
+\begin_inset Quotes eld
+\end_inset
+
+one figure
+\begin_inset Quotes erd
+\end_inset
+
+, we may end up with this scatter plot:
+\end_layout
+
+\begin_deeper
+\begin_layout Chunk
+
+<<season-direction,fig=TRUE,width=3,height=3>>=
+\end_layout
+
+\begin_layout Chunk
+
+## turn original data into a vector and convert to radians from degrees
+\end_layout
+
+\begin_layout Chunk
+
+theta=as.vector(as.matrix(wind))*pi/180  
+\end_layout
+
+\begin_layout Chunk
+
+## create a new dataset, with seasons in it
+\end_layout
+
+\begin_layout Chunk
+
+wind2=data.frame(x=cos(theta),y=sin(theta),season=factor(rep(names(wind),each=nro
+w(wind)),levels=names(wind)))
+\end_layout
+
+\begin_layout Chunk
+
+plot(y~x,data=wind2,col=as.integer(wind2$season),pch=20)
+\end_layout
+
+\begin_layout Chunk
+
+legend(-.35,.35,names(wind),fill=1:4,bty='n',cex=.8)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Standard
+but the obvious problem is that some points are overlapped with each other;
+ at least my eyes are not good at grouping all the points of the same season
+ together to see any patterns.
+ One way to get around this issue is to distort the points a little bit
+ (add a small amount of noise to the coordinates of points), and the other
+ way is to use a 
+\begin_inset Quotes eld
+\end_inset
+
+conditional
+\begin_inset Quotes erd
+\end_inset
+
+ plot like this:
+\end_layout
+
+\begin_layout Chunk
+
+<<season-coplot,fig=TRUE,width=5.5,height=3>>=
+\end_layout
+
+\begin_layout Chunk
+
+coplot(y~x|season,data=wind2,col=as.integer(wind2$season),xlab='$
+\backslash
+
+\backslash
+cos(
+\backslash
+
+\backslash
+theta)$',ylab='$
+\backslash
+
+\backslash
+sin(
+\backslash
+
+\backslash
+theta)$',pch=20,xlim=c(-1,1),ylim=c(-1,1),rows=1,columns=4)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Standard
+
+Now there are obvious large 
+\begin_inset Quotes eld
+\end_inset
+
+gaps
+\begin_inset Quotes erd
+\end_inset
+
+ in Summer (e.g.
+ wind rarely comes from south).
+ There seems to be more variability in other seasons, and the directions
+ are more uniformly distributed in four directions in Autumn.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Standard
+Again, the appendix below is for those who are interested; it is not a part
+ of the solutions.
+\end_layout
+
+\begin_layout Section
+\start_of_appendix
+NA and NaN
+\end_layout
+
+\begin_layout Standard
+You may write another mathmatically equivalent formula for the short formula
+ 
+\begin_inset Formula $\sqrt{\sum_{i=1}^{n}\left(x_{i}^{2}-\bar{x}^{2}\right)/(n-1)}$
+\end_inset
+
+, and the result for 1b can be different:
+\end_layout
+
+\begin_layout Chunk
+
+<<sd-formula2>>=
+\end_layout
+
+\begin_layout Chunk
+
+sd_short2 = function(x) {sqrt(sum(x^2 - mean(x)^2)/(length(x)-1))}
+\end_layout
+
+\begin_layout Chunk
+
+sd_short2(d2)  # now we get NaN
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+NA
+\family default
+ (not available) and 
+\family typewriter
+NaN
+\family default
+ (not a number) are two special values in R; NA is often from missingness,
+ while NaN is usually a result of improper arithmetic calculation, e.g.
+ the square root of a negative number.
+\end_layout
+
+\begin_layout Chunk
+
+<<na-nan>>=
+\end_layout
+
+\begin_layout Chunk
+
+sqrt(-2)
+\end_layout
+
+\begin_layout Chunk
+
+x=NA
+\end_layout
+
+\begin_layout Chunk
+
+x==NA  # wrong way of checking if x is NA
+\end_layout
+
+\begin_layout Chunk
+
+is.na(x)  # correct way
+\end_layout
+
+\begin_layout Chunk
+
+x=NaN
+\end_layout
+
+\begin_layout Chunk
+
+is.nan(x)
+\end_layout
+
+\begin_layout Chunk
+
+is.na(x)  # NaN also implies NA
+\end_layout
+
+\begin_layout Chunk
+
+## you may wonder if 1/0 is NaN, the answer is no
+\end_layout
+
+\begin_layout Chunk
+
+1/0  # it is infinite
+\end_layout
+
+\begin_layout Chunk
+
+is.finite(1/0)
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Standard
+From above examples, you should be aware that (R) programming is not imagination
+ -- you have to try before you know the truth.
+ This is what I often do even after years of using R.
+\end_layout
+
+\begin_layout Section
+Floating-Point Arithmetic
+\end_layout
+
+\begin_layout Standard
+R has a famous FAQ and I can even remember its number 7.31 (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://cran.r-project.org/doc/FAQ/R-FAQ.html#Why-doesn_0027t-R-think-these-numbers-
+are-equal_003f
+\end_layout
+
+\end_inset
+
+).
+ The problem 1 in this homework revealed one side of numeric traps in scientific
+ computation, R FAQ 7.31 is another side that we may run into.
+ If you do not have time to read it, here is what we can reproduce:
+\end_layout
+
+\begin_layout Chunk
+
+<<floating-arith>>=
+\end_layout
+
+\begin_layout Chunk
+
+a <- sqrt(2)
+\end_layout
+
+\begin_layout Chunk
+
+a * a == 2  # mathematically, should be exactly equal to 2
+\end_layout
+
+\begin_layout Chunk
+
+a * a - 2
+\end_layout
+
+\begin_layout Chunk
+
+## another surprising example
+\end_layout
+
+\begin_layout Chunk
+
+x=.3-.7+.4
+\end_layout
+
+\begin_layout Chunk
+
+x==0  # FALSE; what?!
+\end_layout
+
+\begin_layout Chunk
+
+x
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Standard
+Note this is not a problem specific to R.
+\end_layout
+
+\begin_layout Section
+Excel for Statistics
+\end_layout
+
+\begin_layout Standard
+Gregor Gorjanc wrote a blog post in 2008 which demonstrated a few flaws
+ of Microsoft Excel: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://ggorjan.blogspot.com/2008/09/excel-2007-for-statistics.html
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
