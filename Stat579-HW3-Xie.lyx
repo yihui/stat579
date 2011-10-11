@@ -1,0 +1,938 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 415
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{Sweave}
+\usepackage{tikz}
+\usepackage{ae}
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{aess}
+\renewcommand{\ttdefault}{aett}
+\end_preamble
+\options nogin
+\use_default_options true
+\begin_modules
+sweave
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding default
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\use_undertilde 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2cm
+\rightmargin 2.5cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Flex Sweave Options
+status open
+
+\begin_layout Plain Layout
+
+tidy=TRUE,prefix.string=figure/stat579,external=FALSE
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chunk
+
+<<set-options,echo=FALSE>>=
+\end_layout
+
+\begin_layout Chunk
+
+options(replace.assign=TRUE,SweaveHooks=list(
+\end_layout
+
+\begin_layout Chunk
+
+  fig=function() {par(mar=c(4,4,.1,.1),cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)}
+\end_layout
+
+\begin_layout Chunk
+
+),width=85)
+\end_layout
+
+\begin_layout Chunk
+
+setCacheDir('cache')
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Title
+Stat 579 Homework 3
+\end_layout
+
+\begin_layout Author
+Yihui Xie
+\end_layout
+
+\begin_layout Enumerate
+US Senate
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Read the file
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<senate-data,cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+## note the separator is the tab character, and quote should be the double
+ quote character
+\end_layout
+
+\begin_layout Plain Layout
+
+senate=read.table('http://maitra.public.iastate.edu/stat579/datasets/senate-109.txt',
+header=TRUE,sep='
+\backslash
+t',quote='"')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+<<senate-structure>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+str(senate[,1:4])
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Bill type
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Extract the string before 
+\family typewriter
+_
+\family default
+ essentially means to substitute everything after it with an empty string:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<bill-type>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+## a dot .
+ matches any characters, and a modifier * means match the previous pattern
+ (i.e.
+ the dot) for arbitrary times
+\end_layout
+
+\begin_layout Plain Layout
+
+bill.type = sub('_.*', '', senate[, 1])
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Tabulate bills
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<tab-bills>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+table(bill.type)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+Data quality
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<data-quality>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+X=as.matrix(senate[,-c(1,2)])  # remove the first 2 columns and assign to
+ X
+\end_layout
+
+\begin_layout Plain Layout
+
+vote1=diag(X%*%t(X))  # non-missing votes
+\end_layout
+
+\begin_layout Plain Layout
+
+vote2=senate$missing_votes  # missing votes
+\end_layout
+
+\begin_layout Plain Layout
+
+## they should add up to 100
+\end_layout
+
+\begin_layout Plain Layout
+
+head(vote1+vote2, 30) # result too long; only print the first 30 elements
+\end_layout
+
+\begin_layout Plain Layout
+
+## or simply ask R 'are all of them equal to 100'?
+\end_layout
+
+\begin_layout Plain Layout
+
+all(vote1+vote2==100) # the answer is YES!
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+For/neutral/against Senator Frist?
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<frist-matrix>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+## we need to remove the 0 votes of Frist (in the last column)
+\end_layout
+
+\begin_layout Plain Layout
+
+ncol(senate)  # number of columns in the data
+\end_layout
+
+\begin_layout Plain Layout
+
+## note how to use logical values as row indices
+\end_layout
+
+\begin_layout Plain Layout
+
+cond=senate[,102]!=0
+\end_layout
+
+\begin_layout Plain Layout
+
+senate2=senate[cond, ]
+\end_layout
+
+\begin_layout Plain Layout
+
+## an equivalent but probably more intuitive way to write this is: senate2
+ <- subset(senate, cond); you can read the R code as 'subset the data according
+ to this condition', which is nearly plain English
+\end_layout
+
+\begin_layout Plain Layout
+
+frist=senate2[,3:101]*senate2[,102] # this is what we want
+\end_layout
+
+\begin_layout Plain Layout
+
+## randomly check a few columns to make sure we are correct
+\end_layout
+
+\begin_layout Plain Layout
+
+head(senate2[, c(3,87,102)], 3)  # first 3 rows
+\end_layout
+
+\begin_layout Plain Layout
+
+head(frist[,c(1,85)],3) # column 3 in senate2 is really column 1 in frist
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+I played a little trick here to get the result 
+\family typewriter
+frist
+\family default
+ using a kindergarten fact that 
+\begin_inset Formula $1*1=1$
+\end_inset
+
+, 
+\begin_inset Formula $1*(-1)=-1$
+\end_inset
+
+, 
+\begin_inset Formula $-1*1=-1$
+\end_inset
+
+ and 
+\begin_inset Formula $-1*(-1)=1$
+\end_inset
+
+.
+ This immediately gives me the numbers denoting whether a senator is for
+ (1) or against (-1) Frist (or neutral (0)).
+ However, there is a dark fact behind the scene in R: why can I use an ordinary
+ 
+\family typewriter
+*
+\family default
+ instead of 
+\family typewriter
+%*%
+\family default
+? This is because R almost always recycles `shorter' objects to the length
+ of longer objects, and the multiplication above was applied column by column
+ (column 3 * column 102, 4 * column 102, ...).
+ More on this in the appendix.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Tabulate by bill types
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<tab-frist>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+votes.frist = t(apply(frist,1,function(x){
+\end_layout
+
+\begin_layout Plain Layout
+
+## why not table(x) directly? because some rows may not have all of -1,
+ 0 and 1, then we will run into troubles; factor() here explicitly converts
+ each row to a factor with 3 levels, so table() will not ignore any type
+ of votes
+\end_layout
+
+\begin_layout Plain Layout
+
+x=factor(x, levels=c(-1,0,1),labels=c('against','neutral','for'));table(x)}))
+\end_layout
+
+\begin_layout Plain Layout
+
+## how the data looks like now (together with bill types); note we have
+ to index bill.type by cond too (this is for demo purpose; not part of the
+ solutions)
+\end_layout
+
+\begin_layout Plain Layout
+
+head(data.frame(bill.type=bill.type[cond],votes.frist))
+\end_layout
+
+\begin_layout Plain Layout
+
+## we aggregate the data by bill.type using the function mean()
+\end_layout
+
+\begin_layout Plain Layout
+
+aggregate(votes.frist, by=list(bill.type=bill.type[cond]), mean)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+PET image
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Read the data
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<fbp-data,cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+x=as.matrix(read.table('http://maitra.public.iastate.edu/stat579/datasets/fbp-img.dat'
+))
+\end_layout
+
+\begin_layout Plain Layout
+
+str(x)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+The color image; note white indicates large values, and red is for small
+ values (yellow in-between).
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<fbp-image-orig,fig=TRUE,width=2.5,height=2.5,tikz=FALSE,pdf=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+par(mar=rep(0,4));image(x,axes=FALSE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Compress the data
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+bin by the range of data
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<bin-range,fig=TRUE,width=2.5,height=2.5,tikz=FALSE,pdf=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+## define a function that bins data according to breaks
+\end_layout
+
+\begin_layout Plain Layout
+
+bin_data=function(breaks){
+\end_layout
+
+\begin_layout Plain Layout
+
+z=as.vector(x)
+\end_layout
+
+\begin_layout Plain Layout
+
+## labels=FALSE means to map x to integer code; include.lowest means the
+ left-most bin should include the minimum of the data (the intervals are
+ of the form (low, high])
+\end_layout
+
+\begin_layout Plain Layout
+
+idx=cut(z, breaks=breaks, labels=FALSE,include.lowest=TRUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+m=(breaks[idx]+breaks[idx+1])/2  # mid-points
+\end_layout
+
+\begin_layout Plain Layout
+
+matrix(m,nrow=nrow(x),ncol=ncol(x))
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+b1=seq(min(x),max(x),length=9)  # 9 points define 8 bins
+\end_layout
+
+\begin_layout Plain Layout
+
+x1=bin_data(b1)
+\end_layout
+
+\begin_layout Plain Layout
+
+par(mar=rep(0,4));image(x1,axes=FALSE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+bin by quantiles
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<bin-quantile,fig=TRUE,width=2.5,height=2.5,tikz=FALSE,pdf=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+b2=quantile(x,seq(0,1,length=9))
+\end_layout
+
+\begin_layout Plain Layout
+
+x2=bin_data(b2)
+\end_layout
+
+\begin_layout Plain Layout
+
+par(mar=rep(0,4));image(x2,axes=FALSE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Binning by the range does not lead to a huge loss of information in this
+ case (although more white-ish areas in the image plot), while binning by
+ quantiles apparently results in loss of information -- the structure in
+ large values is barely kept (in the original plot we can distinguish between
+ yellow and white, but in the compressed data, yellow areas are almost gone).
+ To understand the situation more clearly, histograms will help (which preserves
+ more information?):
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<fbp-hist,fig=TRUE,width=5,height=1.8>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+par(mfrow=c(1,3))
+\end_layout
+
+\begin_layout Plain Layout
+
+hist(x,xlab='original values',main='');hist(x1,xlab='bin by range',main='');hist
+(x2,xlab='bin by quantiles',main='')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_deeper
+\begin_layout Section
+\start_of_appendix
+Automatic recycling in R
+\end_layout
+
+\begin_layout Standard
+R often automatically recyles shorter objects when computing with longer
+ objects.
+ Here are a few examples showing you how this works:
+\end_layout
+
+\begin_layout Chunk
+
+<<recycling-short>>=
+\end_layout
+
+\begin_layout Chunk
+
+## a simple example about vectors
+\end_layout
+
+\begin_layout Chunk
+
+x1=1:10
+\end_layout
+
+\begin_layout Chunk
+
+x2=1:2
+\end_layout
+
+\begin_layout Chunk
+
+## x1 is of length 10; x2 is of length 2, so x2 is extended to match the
+ length of x1
+\end_layout
+
+\begin_layout Chunk
+
+x1+x2
+\end_layout
+
+\begin_layout Chunk
+
+## equivalent to
+\end_layout
+
+\begin_layout Chunk
+
+x1+rep(x2,5)
+\end_layout
+
+\begin_layout Chunk
+
+## what about matrices?
+\end_layout
+
+\begin_layout Chunk
+
+(x3=matrix(1:6,2))
+\end_layout
+
+\begin_layout Chunk
+
+x3+c(10,20) # the second object is treated as a single column and added
+ to x3
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Standard
+
+To rigorous programmers, this feature is annoying (why do they allow cats
+ to be added to dogs? they just do not match!), and in fact, there are tons
+ of such ``annoying'' automatic features.
+ The reason is R was written by statisticians, and they just hope to mimic
+ some mathematical annotations, e.g.
+ 
+\begin_inset Formula $A+1$
+\end_inset
+
+ means add 1 to each element of the matrix 
+\begin_inset Formula $A$
+\end_inset
+
+ in math, and we do not want to be too tedious to write 
+\family typewriter
+A + matrix(1, nrow = nrow(A), ncol = ncol(A))
+\family default
+.
+ R is highly optimized for such vectorized operations, as you have learned
+ in class.
+\end_layout
+
+\begin_layout Section
+Understanding the function 
+\emph on
+cut()
+\end_layout
+
+\begin_layout Standard
+The function 
+\emph on
+cut()
+\emph default
+ can be used to cut a numeric vector into intervals.
+ Let's play with a small data to understand it (whenever you want to understand
+ something in R, I always suggest you play with a small object first):
+\end_layout
+
+\begin_layout Chunk
+
+<<cut-demo>>=
+\end_layout
+
+\begin_layout Chunk
+
+x=c(1,6,4,9,2)
+\end_layout
+
+\begin_layout Chunk
+
+b=c(0,3,5,10)  # breaks
+\end_layout
+
+\begin_layout Chunk
+
+cut(x,b)
+\end_layout
+
+\begin_layout Chunk
+
+(idx=cut(x,b,labels=FALSE))  # what do these integers mean?
+\end_layout
+
+\begin_layout Chunk
+
+b[idx]
+\end_layout
+
+\begin_layout Chunk
+
+b[idx+1]
+\end_layout
+
+\begin_layout Chunk
+
+(b[idx]+b[idx+1])/2
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Section
+Don't repeat yourself
+\end_layout
+
+\begin_layout Standard
+Don't Repeat Yourself (DRY) is an important principle in programming, and
+ this is why I wrote a function in 3(c) to bin the data -- given any breaks,
+ this function can bin the original data into mid-points of these breaks.
+ This needs a little bit abstraction, but we will benefit from this bit
+ of ``extra'' efforts.
+ Read this Wikipedia page for more: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://en.wikipedia.org/wiki/Don't_repeat_yourself
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
