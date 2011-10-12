@@ -1,22 +1,4 @@
 ### R code from vignette source 'Stat579-HW2-Xie.Rnw'
-###################################################
-### code chunk number 1: Stat579-HW2-Xie.Rnw:13-14
-###################################################
-
-if (exists(".orig.enc")) options(encoding = .orig.enc)
-
-
-
-###################################################
-### code chunk number 2: set-options
-###################################################
-
-options(replace.assign = TRUE, SweaveHooks = list(fig = function() {
-    par(mar = c(4, 4, 0.1, 0.1), cex.lab = 0.95, cex.axis = 0.9, 
-        mgp = c(2, 0.7, 0), tcl = -0.3)
-}), width = 85)
-setCacheDir("cache")
-
 
 
 ###################################################
