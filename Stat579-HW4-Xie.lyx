@@ -1,0 +1,614 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 415
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{Sweave}
+\usepackage{tikz}
+\usepackage{ae}
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{aess}
+\renewcommand{\ttdefault}{aett}
+\end_preamble
+\options nogin
+\use_default_options true
+\begin_modules
+sweave
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding default
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\use_undertilde 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2cm
+\rightmargin 2.5cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Flex Sweave Options
+status open
+
+\begin_layout Plain Layout
+
+tidy=TRUE,prefix.string=figure/stat579,external=TRUE
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chunk
+<<set-options,echo=FALSE>>=
+\end_layout
+
+\begin_layout Chunk
+options(replace.assign=TRUE,SweaveHooks=list(
+\end_layout
+
+\begin_layout Chunk
+  fig=function() {par(mar=c(4,4,.1,.1),cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)}
+\end_layout
+
+\begin_layout Chunk
+),width=85)
+\end_layout
+
+\begin_layout Chunk
+setCacheDir('cache')
+\end_layout
+
+\begin_layout Chunk
+@
+\end_layout
+
+\begin_layout Title
+Stat 579 Homework 4
+\end_layout
+
+\begin_layout Author
+Yihui Xie
+\end_layout
+
+\begin_layout Enumerate
+Microarray gene expression data
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Read the data
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<gene-data,cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+## the first column contains row names, so read.csv(..., row.names = 1); in this
+ case, I only have 22 columns here (instead of 23 which you normally would
+ get)
+\end_layout
+
+\begin_layout Plain Layout
+
+gene=read.csv('http://maitra.public.iastate.edu/stat579/datasets/diurnaldata.csv',row.
+names=1)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Average over replications (i.e.
+ in the 3rd dimension)
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<average-rep,cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+gene.rep=array(as.matrix(gene),c(22810, 11,2))
+\end_layout
+
+\begin_layout Plain Layout
+
+mean.rep=apply(gene.rep,c(1,2),mean)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Standardization
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<average-time>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+## average in each row
+\end_layout
+
+\begin_layout Plain Layout
+
+mean.gene=apply(mean.rep,1,mean)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Eliminate the mean
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<eliminate-mean>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+mean0.gene=mean.rep-matrix(mean.gene,nrow=22810,ncol=11)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Scale to standard deviations 1
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<gene-sd1>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+sd.gene=apply(mean0.gene,1,sd)
+\end_layout
+
+\begin_layout Plain Layout
+
+gene.scaled=mean0.gene/matrix(sd.gene,nrow=22810,ncol=11)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+The smaller matrix
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<small-gene,cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+## same idea as above
+\end_layout
+
+\begin_layout Plain Layout
+
+small=read.table('http://maitra.public.iastate.edu/stat579/datasets/micromeans.dat')
+\end_layout
+
+\begin_layout Plain Layout
+
+small=as.matrix(small)
+\end_layout
+
+\begin_layout Plain Layout
+
+small.mean=apply(small,1,mean)
+\end_layout
+
+\begin_layout Plain Layout
+
+small.sd=apply(small,1,sd)
+\end_layout
+
+\begin_layout Plain Layout
+
+small.scaled=(small-small.mean)/small.sd
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Euclidean distances and neighbors (distance between vectors 
+\begin_inset Formula $x$
+\end_inset
+
+ and 
+\begin_inset Formula $y$
+\end_inset
+
+ is defined as 
+\begin_inset Formula $\sqrt{\sum_{i=1}^{n}(x_{i}-y_{i})^{2}}$
+\end_inset
+
+)
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<euclidean-distances,fig=TRUE,width=3,height=3>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+## set up data from 1(e)
+\end_layout
+
+\begin_layout Plain Layout
+
+gene2=array(gene.scaled, dim=c(22810,11,20))
+\end_layout
+
+\begin_layout Plain Layout
+
+## set up data from 1(f)
+\end_layout
+
+\begin_layout Plain Layout
+
+small2=array(dim=c(22810,11,20))
+\end_layout
+
+\begin_layout Plain Layout
+
+## replicate the k-th row in small.scaled for 22810 times; note byrow = TRUE
+ is extremely important!!
+\end_layout
+
+\begin_layout Plain Layout
+
+for(k in 1:20){small2[,,k]=matrix(small.scaled[k,],nrow=22810,ncol=11,byrow=TRUE)
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+## distances between genes in big data and those in small data
+\end_layout
+
+\begin_layout Plain Layout
+
+gene.dist=apply(gene2-small2,c(1,3),function(x)sqrt(sum(x^2)))
+\end_layout
+
+\begin_layout Plain Layout
+
+dim(gene.dist) # dimensions should be 22810x11
+\end_layout
+
+\begin_layout Plain Layout
+
+## which column is the minimum in each row?
+\end_layout
+
+\begin_layout Plain Layout
+
+gene.nearest=apply(gene.dist,1,which.min)
+\end_layout
+
+\begin_layout Plain Layout
+
+(gene.freq=table(gene.nearest))
+\end_layout
+
+\begin_layout Plain Layout
+
+pie(sort(gene.freq),col=NA) # no colors
+\end_layout
+
+\begin_layout Plain Layout
+
+## STATISTICIANS SHOULD AVOID PIE CHARTS IN GENERAL (SEE ?pie FOR REASONS);
+ IF YOU HAVE TO DRAW A PIE CHART, YOU ALMOST ALWAYS NEED TO SORT THE DATA
+ FIRST! PIE CHARTS WITH MANY CATEGORIES ARE HORRIBLE TO READ.
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Standard
+I often try to avoid loops in my code, but I made one exception this time
+ on purpose.
+ We do not have to use loops to get the replicated small data above, but
+ it should be more straightforward to think in that way: replicate each
+ row for 22810 times, and do this for all the 20 genes.
+ The most challenging part in dealing with matrices and arrays using 
+\emph on
+apply()
+\emph default
+ is to think very carefully about the dimensions, e.g.
+ you have to make sure you are averaging accross a correct dimension, or
+ your dimensions still match after you transpose the data using 
+\emph on
+t()
+\emph default
+, etc.
+ I'm often slow in such tasks, so I frequently look at a simple 
+\begin_inset Formula $3\times4$
+\end_inset
+
+ matrix as shown in the appendix.
+\end_layout
+
+\begin_layout Section
+\start_of_appendix
+Quick examples
+\end_layout
+
+\begin_layout Standard
+As I said in the solutions of HW3, you may want to play with a tiny data
+ to make sure you are on the right track.
+ Below are some examples:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<HW4-examples>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+set.seed(20101011) # for reproducibility
+\end_layout
+
+\begin_layout Plain Layout
+
+(x=matrix(sample(12),ncol=4)) # a small matrix; treat it as the gene expression
+ data
+\end_layout
+
+\begin_layout Plain Layout
+
+(x.rep=array(x, c(3,2,2)))  # what happens when putting it into an array?
+\end_layout
+
+\begin_layout Plain Layout
+
+(x.mean=apply(x.rep, c(1,2), mean))  # does apply() get correct means?
+\end_layout
+
+\begin_layout Plain Layout
+
+## how about replicating data in the 3rd dimension?
+\end_layout
+
+\begin_layout Plain Layout
+
+array(x,c(3,4,2))
+\end_layout
+
+\begin_layout Plain Layout
+
+matrix(1:12,nrow=3,ncol=4) # default is byrow = FALSE
+\end_layout
+
+\begin_layout Plain Layout
+
+matrix(1:12,nrow=3,ncol=4,byrow=TRUE)  # what does 'byrow' mean?
+\end_layout
+
+\begin_layout Plain Layout
+
+## you can go on to verify other things
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+The function 
+\emph on
+scale()
+\end_layout
+
+\begin_layout Standard
+It is almost impossible for statisticians not to have a function to standardize
+ their data!
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<scale-demo>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+## scale() applies to the columns of data while in this case we are supposed
+ to scale the rows, so need to transpose, scale, then transpose back!
+\end_layout
+
+\begin_layout Plain Layout
+
+t(scale(t(x.mean)))
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
