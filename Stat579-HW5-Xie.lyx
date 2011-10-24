@@ -1,0 +1,493 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 416
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{Sweave}
+\usepackage{tikz}
+\usepackage{ae}
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{aess}
+\renewcommand{\ttdefault}{aett}
+\end_preamble
+\options nogin
+\use_default_options true
+\begin_modules
+sweave
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding default
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\use_undertilde 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2cm
+\rightmargin 2.5cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Flex Sweave Options
+status open
+
+\begin_layout Plain Layout
+
+tidy=TRUE,prefix.string=figure/stat579,external=TRUE
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chunk
+<<set-options,echo=FALSE>>=
+\end_layout
+
+\begin_layout Chunk
+options(replace.assign=TRUE,SweaveHooks=list(
+\end_layout
+
+\begin_layout Chunk
+  fig=function() {par(mar=c(4,4,.1,.1),cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)}
+\end_layout
+
+\begin_layout Chunk
+),width=85)
+\end_layout
+
+\begin_layout Chunk
+setCacheDir('cache')
+\end_layout
+
+\begin_layout Chunk
+@
+\end_layout
+
+\begin_layout Title
+Stat 579 Homework 5
+\end_layout
+
+\begin_layout Author
+Yihui Xie
+\end_layout
+
+\begin_layout Enumerate
+Cars (note 
+\begin_inset Formula $Var(\bar{X})=\frac{1}{n}Var(X_{i})$
+\end_inset
+
+)
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<Cars-data>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+data(Cars93,package="MASS")
+\end_layout
+
+\begin_layout Plain Layout
+
+mycars = Cars93[, c('Min.Price', 'Max.Price', 'MPG.city', 'MPG.highway', 'EngineSize
+', 'Length', 'Weight')]
+\end_layout
+
+\begin_layout Plain Layout
+
+## (a)
+\end_layout
+
+\begin_layout Plain Layout
+
+Cars.Means=apply(mycars,2,mean)  # or use colMeans(mycars)
+\end_layout
+
+\begin_layout Plain Layout
+
+## (b)
+\end_layout
+
+\begin_layout Plain Layout
+
+Cars.Std.Errors=apply(mycars,2,function(x){sd(x)/sqrt(length(x))})
+\end_layout
+
+\begin_layout Plain Layout
+
+## (c)
+\end_layout
+
+\begin_layout Plain Layout
+
+t99=qt(p=.995,df=nrow(mycars)-1)
+\end_layout
+
+\begin_layout Plain Layout
+
+## I'm slightly tricky here with matrix multiplication:
+\end_layout
+
+\begin_layout Plain Layout
+
+Cars.CI.99=t(Cars.Means+t99*Cars.Std.Errors %*% t(c(-1, 1)))
+\end_layout
+
+\begin_layout Plain Layout
+
+cars.stats=list(Cars.Means=Cars.Means,Cars.Std.Errors=Cars.Std.Errors,Cars.CI.99=Cars.CI.99
+)
+\end_layout
+
+\begin_layout Plain Layout
+
+str(cars.stats)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\family typewriter
+state.x77
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<state-x77-data>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+## (a)
+\end_layout
+
+\begin_layout Plain Layout
+
+(region.income=tapply(state.x77[,'Income'], state.region, mean))
+\end_layout
+
+\begin_layout Plain Layout
+
+## (b)
+\end_layout
+
+\begin_layout Plain Layout
+
+(illit.max=tapply(state.x77[,'Illiteracy'], state.division, max))
+\end_layout
+
+\begin_layout Plain Layout
+
+## sometimes you may want tapply(..., max, na.rm = TRUE) to remove NA's
+\end_layout
+
+\begin_layout Plain Layout
+
+## (c)
+\end_layout
+
+\begin_layout Plain Layout
+
+## the first argument can be anything of length 50 (I used state.region)
+\end_layout
+
+\begin_layout Plain Layout
+
+(region.freq=tapply(state.region, state.region, length))
+\end_layout
+
+\begin_layout Plain Layout
+
+## should be equivalent to
+\end_layout
+
+\begin_layout Plain Layout
+
+table(state.region)
+\end_layout
+
+\begin_layout Plain Layout
+
+## (d)
+\end_layout
+
+\begin_layout Plain Layout
+
+## identity() is a function as its name indicates
+\end_layout
+
+\begin_layout Plain Layout
+
+div.states=tapply(rownames(state.x77),state.division, identity)
+\end_layout
+
+\begin_layout Plain Layout
+
+str(div.states)
+\end_layout
+
+\begin_layout Plain Layout
+
+## (e)
+\end_layout
+
+\begin_layout Plain Layout
+
+state.size=cut(state.x77[,'Population'],breaks=c(0,2000,10000,Inf),
+\end_layout
+
+\begin_layout Plain Layout
+
+      labels=c("Small","Medium","Large"))
+\end_layout
+
+\begin_layout Plain Layout
+
+(grad.median=tapply(state.x77[,"HS Grad"],list(state.region,state.size),median))
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+From covariances to correlations: 
+\begin_inset Formula $Corr_{ij}=Cov_{ij}/\sqrt{Var_{i}Var_{j}}=Cov_{ij}/\sqrt{Var_{i}}/\sqrt{Var_{j}}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<Cov2Cor-function>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+COV2COR=function(x){
+\end_layout
+
+\begin_layout Plain Layout
+
+v = sqrt(diag(x))
+\end_layout
+
+\begin_layout Plain Layout
+
+  ## divide each row by standard deviation
+\end_layout
+
+\begin_layout Plain Layout
+
+  tmp=sweep(x,1,v,FUN="/") 
+\end_layout
+
+\begin_layout Plain Layout
+
+  ## then divide each column
+\end_layout
+
+\begin_layout Plain Layout
+
+  sweep(tmp,2,v,FUN="/")
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+## a simple test case
+\end_layout
+
+\begin_layout Plain Layout
+
+z=matrix(c(64, 1, 1, 4), 2)
+\end_layout
+
+\begin_layout Plain Layout
+
+COV2COR(z)
+\end_layout
+
+\begin_layout Plain Layout
+
+## there is actually a function in R that does this job
+\end_layout
+
+\begin_layout Plain Layout
+
+cov2cor(z)  # why did I use upper cases in my version?
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+MAD
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<MAD-calculation>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+## (a)
+\end_layout
+
+\begin_layout Plain Layout
+
+(mad.a = apply(mycars,2,mad))
+\end_layout
+
+\begin_layout Plain Layout
+
+## (b): step by step according to the formula
+\end_layout
+
+\begin_layout Plain Layout
+
+m0=apply(mycars,2,median)
+\end_layout
+
+\begin_layout Plain Layout
+
+m1=sweep(mycars,2,m0,FUN="-")
+\end_layout
+
+\begin_layout Plain Layout
+
+m2=abs(m1)
+\end_layout
+
+\begin_layout Plain Layout
+
+m3=apply(m2,2,median)
+\end_layout
+
+\begin_layout Plain Layout
+
+1.4826*m3  # done; the same as (a)?
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_body
+\end_document
