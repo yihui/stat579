@@ -1,0 +1,446 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 416
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{ae}
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{aess}
+\renewcommand{\ttdefault}{aett}
+\end_preamble
+\use_default_options true
+\begin_modules
+knitr
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding default
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\use_undertilde 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2cm
+\rightmargin 2.5cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+SweaveOpts{prefix.string=figure/stat579-}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<set-options,echo=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+options(replace.assign=TRUE,width=100)
+\end_layout
+
+\begin_layout Plain Layout
+
+hooks$set(fig=function(before, options, envir){if (before) par(mar=c(4,4,.1,.1),ce
+x.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)})
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+Stat 579 Homework 6
+\end_layout
+
+\begin_layout Author
+Yihui Xie
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $h(x,n)=\sum_{i=0}^{n}x^{i}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<geom-series>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+x=.3;n=55;res=1
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 1:n)res=res+x^i
+\end_layout
+
+\begin_layout Plain Layout
+
+res
+\end_layout
+
+\begin_layout Plain Layout
+
+x=6.6;n=8;res=1
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 1:n)res=res+x^i
+\end_layout
+
+\begin_layout Plain Layout
+
+res
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Find the min
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<my-min-fun>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+my_min=function(x) {
+\end_layout
+
+\begin_layout Plain Layout
+
+if(length(x)<=1)return(x) # when x only has 1 element
+\end_layout
+
+\begin_layout Plain Layout
+
+x.min=x[1]  # initialize as the 1st element
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 2:length(x)){if(x[i]<x.min)x.min=x[i]  # update when finding a smaller
+ value
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+x.min
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+my_min(c(4,3,8,1,-10)) # test case
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Merge two sorted vectors: the idea is to insert 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ into 
+\begin_inset Formula $y$
+\end_inset
+
+, and the key is to find out what is the appropriate place to insert 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<merge-sorted>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+merge_sorted=function(x,y){
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i in 1:length(x)){idx=y<=x[i];y=c(y[idx],x[i],y[!idx])}
+\end_layout
+
+\begin_layout Plain Layout
+
+y
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+merge_sorted(c(1,3,5),c(-10,4,100))  # tese case
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Problem 12 and 13
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+game of craps (
+\family typewriter
+%in%
+\family default
+ is a logical operator to check if 
+\family typewriter
+x
+\family default
+ is in 
+\family typewriter
+y
+\family default
+)
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<game-of-craps>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+## a small function to give me the sum of 2 rolls
+\end_layout
+
+\begin_layout Plain Layout
+
+roll2=function()sum(sample(1:6,2,replace=TRUE))
+\end_layout
+
+\begin_layout Plain Layout
+
+x=roll2()
+\end_layout
+
+\begin_layout Plain Layout
+
+if (x %in% c(7,11)) message("Bingo!") else {
+\end_layout
+
+\begin_layout Plain Layout
+
+while(TRUE){
+\end_layout
+
+\begin_layout Plain Layout
+
+z=roll2()
+\end_layout
+
+\begin_layout Plain Layout
+
+if(z==x) {message('Bingo!');break} else if (z %in% c(7,11)) {message("Loser!
+ haha");break}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+polar coordinate plot (a simple transformation -- polar to Cartesian)
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<polar-lines,fig=TRUE,width=2.5,height=2.5,align=center,dev=tikz>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+z=seq(0,10,length=300);r=sqrt(z);theta=2*pi*z
+\end_layout
+
+\begin_layout Plain Layout
+
+plot(r*sin(theta),r*cos(theta),type='l',xlab='x',ylab='y')
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_body
+\end_document
